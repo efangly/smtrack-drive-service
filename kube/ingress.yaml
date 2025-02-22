@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: drive-ingress
+  namespace: smtrack
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: drive-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - drive.siamatic.co.th
+    secretName: drive-tls
+  rules:
+  - host: drive.siamatic.co.th
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: upload
+            port:
+              number: 3000

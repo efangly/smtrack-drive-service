@@ -1,0 +1,38 @@
+node_modules
+.next
+!.next/static
+!.next/standalone
+# Ignore logs
+logs
+*.log
+# Ignore environment variables
+.env
+.env.local
+.env.*.local
+# Ignore test files
+__tests__/
+*.spec.js
+*.test.js
+*.spec.ts
+*.test.ts
+
+# Ignore .git folder
+.git
+.gitignore
+
+# Ignore Docker-related files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Ignore IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore miscellaneous
+.DS_Store
+Thumbs.db
+/kube
+README.md

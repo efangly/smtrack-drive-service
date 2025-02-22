@@ -1,0 +1,28 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: drive-issuer
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: fanglyhome@gmail.com
+    privateKeySecretRef:
+      name: drive-issuer-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: drive-tls
+  namespace: smtrack
+spec:
+  secretName: drive-tls-secret
+  issuerRef:
+    name: drive-issuer
+    kind: ClusterIssuer
+  commonName: drive.siamatic.co.th
+  dnsNames:
+  - drive.siamatic.co.th

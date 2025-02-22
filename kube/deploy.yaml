@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: upload
+  namespace: smtrack
+spec:
+  serviceName: upload
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upload
+  template:
+    metadata:
+      labels:
+        app: upload
+    spec:
+      containers:
+      - name: upload
+        image: siamatic/smtrack-upload-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 250m
+          limits:
+            memory: 256Mi
+            cpu: 250m
+        volumeMounts:
+        - name: upload-storage
+          mountPath: /app/public
+  volumeClaimTemplates:
+  - metadata:
+      name: upload-storage
+      namespace: smtrack
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 50Gi
+      storageClassName: upload-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: upload
+  namespace: smtrack
+spec:
+  selector:
+    app: upload
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+  type: ClusterIP
