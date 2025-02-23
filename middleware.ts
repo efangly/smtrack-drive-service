@@ -3,12 +3,13 @@ import type { NextRequest } from 'next/server'
 
 export function middleware (req: NextRequest) {
   const token = req.cookies.get('token')
+  const currentPath = req.nextUrl.pathname
 
-  if (!token) {
+  if (!token && currentPath !== '/login') {
     return NextResponse.redirect(new URL('/login', req.url))
   }
 
-  if (token && req.nextUrl.pathname === '/login') {
+  if (token && currentPath === '/login') {
     return NextResponse.redirect(new URL('/', req.url))
   }
 
@@ -16,5 +17,5 @@ export function middleware (req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/api/drive']
+  matcher: ['/', '/login', '/api/drive']
 }
