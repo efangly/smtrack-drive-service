@@ -1,9 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { RiAtLine, RiKey2Line } from 'react-icons/ri'
 import axios, { AxiosError } from 'axios'
+import { jwtDecode } from 'jwt-decode'
 
 export default function Login () {
   const router = useRouter()
@@ -36,9 +37,20 @@ export default function Login () {
             password: loginForm.userPassword
           }
         )
-        document.cookie = `token=${response.data.data.token}; path=/`
-
-        router.push('/')
+        if (response.data.data.token) {
+          const decoded: TokenType = await jwtDecode(response.data.data.token)
+          if (decoded.role === 'SUPER') {
+            document.cookie = `token=${response.data.data.token}; path=/`
+            router.push('/')
+          } else {
+            setIsLoading(false)
+            setIsError({
+              status: true,
+              tag: 'error',
+              message: `Access denied!`
+            })
+          }
+        }
       } catch (error) {
         if (error instanceof AxiosError) {
           setIsError({
